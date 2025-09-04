@@ -11,7 +11,7 @@ const Layout = ({ children }: Props) => {
           <h2 className="text-4xl font-bold leading-tight">H-Source!</h2>
           <p className="text-lg opacity-80">Vendor Marketplace.</p>
           <img
-            src="/illustration.svg" // replace with your image or graphic
+            src="/illustration.svg"
             alt="Auth Illustration"
             className="w-full h-auto mt-6"
           />
