@@ -5,7 +5,7 @@ interface Props {
 const Layout = ({ children }: Props) => {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 min-h-screen">
-      {/* Left side image or graphic */}
+      {/* Left side image or graphic changes */}
       <div className="hidden lg:flex items-center justify-center bg-gradient-to-br from-blue-600 to-indigo-800 text-white p-10">
         <div className="text-center space-y-6 max-w-md">
           <h2 className="text-4xl font-bold leading-tight">H-Source!</h2>
