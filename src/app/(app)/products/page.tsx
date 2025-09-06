@@ -1,5 +1,6 @@
 "use client";
 
+import { useGetMyProducts } from "@/api/products";
 import SearchBar from "@/components/search";
 import SelectBox from "@/components/select-box";
 import { Pen, Plus, Trash } from "lucide-react";
@@ -9,6 +10,11 @@ import React, { useState } from "react";
 const Products = () => {
   const [category, setCategory] = useState("");
   const [product, setProduct] = useState("");
+
+  const page = 1;
+  const pageSize = 50;
+  const { data } = useGetMyProducts({ params: { page, pageSize } });
+  console.log(data, "data prodcuts");
 
   return (
     <>

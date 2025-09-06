@@ -52,9 +52,21 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen }) => {
 
       {/* Logo (only on md+) */}
       <div className="hidden md:flex items-center gap-4 p-4">
-        <Image src="/app-logo.svg" alt="logo" className="h-12 w-12" />
+        <Image
+          width={12}
+          height={12}
+          src="/app-logo.svg"
+          alt="logo"
+          className="h-12 w-12"
+        />
         <div className="flex flex-col gap-2">
-          <Image src="/h-source.svg" alt="logo" className="w-auto h-auto" />
+          <Image
+            width={12}
+            height={12}
+            src="/h-source.svg"
+            alt="logo"
+            className="w-auto h-auto"
+          />
           <span className="font-medium text-[#A7A7A7] text-[13px]">
             Vendor Marketplace
           </span>
