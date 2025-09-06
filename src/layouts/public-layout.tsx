@@ -3,7 +3,6 @@
 import React from "react";
 import { useGetAuth } from "@/api/auth";
 import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
 import PageLoader from "@/components/page-loader";
 import { getToken } from "@/lib/auth";
 
@@ -30,8 +29,6 @@ const PublicAuthLayout = ({ children }: Props) => {
   }, [data?.id, router, noToken, isLoading]);
 
   if (!hasMounted || isLoggedIn || isLoading) return <PageLoader />;
-
-  console.log(token, "token in public layout");
 
   return children;
 };

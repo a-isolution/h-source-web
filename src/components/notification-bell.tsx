@@ -11,6 +11,7 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({
   count,
 }) => {
   return (
+    // <Link href="/#" className="relative inline-block">
     <Link href="/notification" className="relative inline-block">
       <Bell className="h-5 w-5 text-gray-600 cursor-pointer" />
       {hasUnread && (

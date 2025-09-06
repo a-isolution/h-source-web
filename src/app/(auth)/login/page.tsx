@@ -5,10 +5,13 @@ import Spinner from "@/components/spinner";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { PasswordInput } from "@/components/password-input";
 
 const Login = () => {
   const router = useRouter();
-  const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const { mutate, isPending } = useLogin();
@@ -18,14 +21,8 @@ const Login = () => {
 
     mutate(
       { password: password, phone: phone },
-      {
-        onSuccess: () => {
-          router.push("/dashboard");
-        },
-      }
+      { onSuccess: () => router.push("/dashboard") }
     );
-
-    console.log("Logging in with:", { phone, password });
   };
 
   return (
@@ -41,70 +38,36 @@ const Login = () => {
 
       <div className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-md border border-gray-200 dark:border-gray-700">
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* <div>
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-            >
-              Email
-            </label>
-            <input
-              id="email"
-              type="email"
-              placeholder="you@example.com"
-              className="mt-1 w-full px-4 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </div> */}
-
-          <div>
-            <label
-              htmlFor="phone"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-            >
-              Phone Number
-            </label>
-            <input
+          <div className="space-y-2">
+            <Label htmlFor="phone">Phone Number</Label>
+            <Input
               id="phone"
-              type="phone"
-              placeholder="you@example.com"
-              className="mt-1 w-full px-4 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+              type="tel"
+              placeholder="+2347040506070"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               required
             />
           </div>
 
-          <div>
-            <label
-              htmlFor="password"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+          <PasswordInput
+            label="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+
+          <div className="flex justify-end my-6">
+            <a
+              href="/forgot-password"
+              className="text-sm text-blue-600 hover:underline dark:text-blue-400"
             >
-              Password
-            </label>
-            <input
-              id="password"
-              type="password"
-              placeholder="••••••••"
-              className="mt-1 w-full px-4 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
+              Forgot Password?
+            </a>
           </div>
 
-          {isPending ? (
-            <Spinner />
-          ) : (
-            <button
-              type="submit"
-              className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition-colors"
-            >
-              Login
-            </button>
-          )}
+          <Button type="submit" className="w-full items-center">
+            {isPending ? <Spinner /> : "Login"}
+          </Button>
         </form>
       </div>
 

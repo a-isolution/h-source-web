@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { Bell, Trash, X } from "lucide-react";
+import { useGetNotifications } from "@/api/notification";
 
 interface NotificationItem {
   id: number;
@@ -12,30 +13,32 @@ interface NotificationItem {
 }
 
 const initialNotifications: NotificationItem[] = [
-  {
-    id: 1,
-    title: "New Order Received",
-    message: "Order #12345 has been placed.",
-    timestamp: "2025-08-27T12:30:00Z",
-    read: false,
-  },
-  {
-    id: 2,
-    title: "Inventory Low",
-    message: "Candy Bar stock is below threshold.",
-    timestamp: "2025-08-26T09:10:00Z",
-    read: true,
-  },
-  {
-    id: 3,
-    title: "User Feedback",
-    message: "A customer left a 5-star review.",
-    timestamp: "2025-08-25T17:20:00Z",
-    read: false,
-  },
+  // {
+  //   id: 1,
+  //   title: "New Order Received",
+  //   message: "Order #12345 has been placed.",
+  //   timestamp: "2025-08-27T12:30:00Z",
+  //   read: false,
+  // },
+  // {
+  //   id: 2,
+  //   title: "Inventory Low",
+  //   message: "Candy Bar stock is below threshold.",
+  //   timestamp: "2025-08-26T09:10:00Z",
+  //   read: true,
+  // },
+  // {
+  //   id: 3,
+  //   title: "User Feedback",
+  //   message: "A customer left a 5-star review.",
+  //   timestamp: "2025-08-25T17:20:00Z",
+  //   read: false,
+  // },
 ];
 
 const Notification = () => {
+  const { data } = useGetNotifications();
+
   const [notifications, setNotifications] =
     useState<NotificationItem[]>(initialNotifications);
 

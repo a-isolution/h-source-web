@@ -1,4 +1,5 @@
 import PublicAuthLayout from "@/layouts/public-layout";
+import Image from "next/image";
 
 interface Props {
   children: React.ReactNode;
@@ -13,7 +14,7 @@ const Layout = ({ children }: Props) => {
           <div className="text-center space-y-6 max-w-md">
             <h2 className="text-4xl font-bold leading-tight">H-Source!</h2>
             <p className="text-lg opacity-80">Vendor Marketplace.</p>
-            <img
+            <Image
               src="/illustration.svg"
               alt="Auth Illustration"
               className="w-full h-auto mt-6"

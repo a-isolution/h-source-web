@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Bell, Search, Menu } from "lucide-react";
+import { Menu } from "lucide-react";
 
 import SearchBar from "./search";
 import { UserProfile } from "./user-profile";
@@ -51,7 +51,7 @@ export const Topbar: React.FC<TopbarProps> = ({
         <SearchBar />
       </div>
 
-      <div className="flex items-center gap-4 z-10 ml-auto">
+      <div className="flex items-center gap-8 z-10 ml-auto">
         <NotificationBell count={5} />
         <UserProfile />
       </div>

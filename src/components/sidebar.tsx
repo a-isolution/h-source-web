@@ -11,6 +11,7 @@ import {
   Layers,
 } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
+import Image from "next/image";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -51,9 +52,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen }) => {
 
       {/* Logo (only on md+) */}
       <div className="hidden md:flex items-center gap-4 p-4">
-        <img src="/app-logo.svg" alt="logo" className="h-12 w-12" />
+        <Image src="/app-logo.svg" alt="logo" className="h-12 w-12" />
         <div className="flex flex-col gap-2">
-          <img src="/h-source.svg" alt="logo" className="w-auto h-auto" />
+          <Image src="/h-source.svg" alt="logo" className="w-auto h-auto" />
           <span className="font-medium text-[#A7A7A7] text-[13px]">
             Vendor Marketplace
           </span>
