@@ -10,9 +10,11 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { useRouter } from "next/navigation";
+import { useLogout } from "@/api/auth";
 
 export const UserProfile: React.FC = () => {
   const router = useRouter();
+  const { mutate: logoutUser } = useLogout();
 
   const handleProfile = () => {
     console.log("Profile");
@@ -22,9 +24,7 @@ export const UserProfile: React.FC = () => {
     router.push("/settings");
   };
 
-  const handleLogout = () => {
-    router.push("/login");
-  };
+  const handleLogout = () => logoutUser();
 
   return (
     <DropdownMenu>

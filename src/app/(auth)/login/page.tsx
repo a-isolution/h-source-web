@@ -1,5 +1,7 @@
 "use client";
 
+import { useLogin } from "@/api/auth";
+import Spinner from "@/components/spinner";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
@@ -7,13 +9,23 @@ import React, { useState } from "react";
 const Login = () => {
   const router = useRouter();
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
+  const { mutate, isPending } = useLogin();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Replace with real authentication logic
-    console.log("Logging in with:", { email, password });
-    router.push("/dashboard");
+
+    mutate(
+      { password: password, phone: phone },
+      {
+        onSuccess: () => {
+          router.push("/dashboard");
+        },
+      }
+    );
+
+    console.log("Logging in with:", { phone, password });
   };
 
   return (
@@ -29,7 +41,7 @@ const Login = () => {
 
       <div className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-md border border-gray-200 dark:border-gray-700">
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
+          {/* <div>
             <label
               htmlFor="email"
               className="block text-sm font-medium text-gray-700 dark:text-gray-300"
@@ -43,6 +55,24 @@ const Login = () => {
               className="mt-1 w-full px-4 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div> */}
+
+          <div>
+            <label
+              htmlFor="phone"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+            >
+              Phone Number
+            </label>
+            <input
+              id="phone"
+              type="phone"
+              placeholder="you@example.com"
+              className="mt-1 w-full px-4 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
               required
             />
           </div>
@@ -65,12 +95,16 @@ const Login = () => {
             />
           </div>
 
-          <button
-            type="submit"
-            className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition-colors"
-          >
-            Login
-          </button>
+          {isPending ? (
+            <Spinner />
+          ) : (
+            <button
+              type="submit"
+              className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition-colors"
+            >
+              Login
+            </button>
+          )}
         </form>
       </div>
 
