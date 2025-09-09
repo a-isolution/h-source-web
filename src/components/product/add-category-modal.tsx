@@ -49,12 +49,8 @@ export default function AddCategoryModal({
       return;
     }
 
-    const formData = new FormData();
-    formData.append("name", name);
-    formData.append("description", description);
-
     mutate(
-      { body: formData as any },
+      { body: { name, description } },
       {
         onSuccess: (data) => {
           toast.success(data?.message || "Category created successfully!");

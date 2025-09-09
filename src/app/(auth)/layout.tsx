@@ -18,6 +18,8 @@ const Layout = ({ children }: Props) => {
               src="/illustration.svg"
               alt="Auth Illustration"
               className="w-full h-auto mt-6"
+              width={12}
+              height={12}
             />
           </div>
         </div>

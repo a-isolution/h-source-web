@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { client, onError, TResponse } from "./api-client";
+import { client, onError, testClient, TResponse } from "./api-client";
 import { useRouter } from "next/navigation";
 import { clearToken, TOKEN_KEY } from "@/lib/auth";
 import { toast } from "sonner";
@@ -10,6 +10,11 @@ export const prepareRequestHeader = (token: string) => {
 };
 
 // actions
+const healtCheck = async () => {
+  const res = await testClient.get<TResponse<any>>("/");
+  return res.data.data;
+};
+
 const getAuth = async () => {
   const res = await client.get<TResponse<any>>("/auth");
   return res.data.data;
@@ -20,7 +25,7 @@ const updateProfle = async (body: any) => {
   return res.data.data;
 };
 
-const updateAvatar = async (body: TVerifyPhone) => {
+const updateAvatar = async (body: TUpdateAvatar) => {
   const res = await client.put("/auth/avatar", body);
   return res.data.data;
 };
@@ -76,6 +81,10 @@ const verifyPhone = async (body: TVerifyPhone) => {
 };
 
 // hooks
+export const useHealthCheck = () => {
+  return useQuery({ queryKey: ["health"], queryFn: () => healtCheck() });
+};
+
 export const useGetAuth = ({ enabled }: TGetAuth = { enabled: false }) => {
   return useQuery({ enabled, queryKey: ["auth"], queryFn: () => getAuth() });
 };
@@ -202,3 +211,4 @@ export type TVerifyEmailCode = { email: string };
 export type TVerifyEmail = { email: string; code: string };
 export type TVerifyPhoneCode = { phone: string };
 export type TVerifyPhone = { phone: string; code: string };
+export type TUpdateAvatar = { file: any };

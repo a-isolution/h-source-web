@@ -76,7 +76,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen }) => {
       {/* Menu */}
       <nav className="flex-1 p-4 space-y-2">
         {menuItems.map((item) => {
-          const isActive = pathname === item.to;
+          const isActive = pathname.includes(item.to);
           return (
             <button
               key={item.label}

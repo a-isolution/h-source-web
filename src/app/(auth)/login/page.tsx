@@ -1,6 +1,6 @@
 "use client";
 
-import { useLogin } from "@/api/auth";
+import { useHealthCheck, useLogin } from "@/api/auth";
 import Spinner from "@/components/spinner";
 import Link from "next/link";
 import { useRouter } from "next/navigation";

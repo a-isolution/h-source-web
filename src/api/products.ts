@@ -7,10 +7,48 @@ const createProduct = async (body: TCreateProductBody) => {
   return res.data;
 };
 
-const getMyProducts = async ({ params }: { params: GetMyProductsParams }) => {
-  const { page, pageSize, query, type } = params;
+const updateProduct = async (body: TCreateProductBody, productId: any) => {
+  const res = await client.put(`/product/${productId}`, body);
+  return res.data;
+};
+
+const deleteProduct = async (productId: any) => {
+  const res = await client.delete(`/product/${productId}`);
+  return res.data;
+};
+
+const getMyProducts = async ({ params }: { params: GetProductsParams }) => {
+  const { page, pageSize, query, categoryId, brandId, isActive, isFeatured } =
+    params;
+  // Build query params object conditionally
+  const queryParams: Record<string, any> = {
+    q: query || "",
+    page,
+    pageSize,
+  };
+
+  if (categoryId) queryParams.categoryId = categoryId;
+  if (brandId) queryParams.brandId = brandId;
+  if (typeof isActive !== "undefined") queryParams.isActive = isActive;
+  if (typeof isFeatured !== "undefined") queryParams.isFeatured = isFeatured;
+
+  const searchParams = new URLSearchParams(queryParams).toString();
+
   const res = await client.get<TResponse<any>>(
-    `/product/vendor?page=${page}&pageSize=${pageSize}`
+    `/product/store?${searchParams}`
+  );
+
+  return res.data.data;
+};
+
+const getProductById = async ({ productId }: { productId: any }) => {
+  const res = await client.get<TResponse<any>>(`/product/${productId}`);
+  return res.data.data;
+};
+
+const getProductSizes = async () => {
+  const res = await client.get<TResponse<any>>(
+    `/catalog/size?q&page=1&pageSize=100&isActive=1`
   );
   return res.data.data;
 };
@@ -23,14 +61,45 @@ export const useCreateProduct = () => {
   });
 };
 
-export const useGetMyProducts = ({
-  params,
-}: {
-  params: GetMyProductsParams;
-}) => {
+export const useUpdateProduct = () => {
+  return useMutation({
+    onError,
+    mutationFn: ({
+      body,
+      productId,
+    }: {
+      body: TCreateProductBody;
+      productId: any;
+    }) => updateProduct(body, productId),
+  });
+};
+
+export const useDeleteProduct = () => {
+  return useMutation({
+    onError,
+    mutationFn: ({ productId }: { productId: any }) => deleteProduct(productId),
+  });
+};
+
+export const useGetMyProducts = ({ params }: { params: GetProductsParams }) => {
   return useQuery({
-    queryKey: ["my-products"],
+    queryKey: ["my-products", params],
     queryFn: () => getMyProducts({ params }),
+  });
+};
+
+export const useGetProductById = ({ productId }: { productId?: any }) => {
+  return useQuery({
+    queryKey: ["product", productId],
+    queryFn: () => getProductById({ productId }),
+    enabled: !!productId,
+  });
+};
+
+export const useGetProductSizes = () => {
+  return useQuery({
+    queryKey: ["product-size"],
+    queryFn: () => getProductSizes(),
   });
 };
 
@@ -38,7 +107,7 @@ export const useGetMyProducts = ({
 export type TCreateProductBody = {
   name: string;
   description: string;
-  price: string;
+  price: any;
   currencyId: string;
   brandId: string;
   categoryId: string;
@@ -48,9 +117,12 @@ export type TCreateProductBody = {
   files: any;
 };
 
-export interface GetMyProductsParams {
+export interface GetProductsParams {
   page: number;
   pageSize: number;
   query?: string;
-  type?: string;
+  categoryId?: any;
+  brandId?: any;
+  isActive?: any;
+  isFeatured?: any;
 }

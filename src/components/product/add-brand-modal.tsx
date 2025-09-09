@@ -49,7 +49,7 @@ export default function AddBrandModal({ open, setOpen }: AddBrandModalProps) {
   };
 
   const handleSubmit = () => {
-    if (!name || !description || !file) {
+    if (!name || !description) {
       toast.error("All fields are required");
       return;
     }
@@ -57,7 +57,7 @@ export default function AddBrandModal({ open, setOpen }: AddBrandModalProps) {
     const formData = new FormData();
     formData.append("name", name);
     formData.append("description", description);
-    formData.append("file", file);
+    // formData.append("file", file);
 
     mutate(
       { body: formData as any },

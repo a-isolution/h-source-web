@@ -3,7 +3,7 @@ import { client, onError, TResponse } from "./api-client";
 
 // actions
 const createCategory = async (body: TCreateCategoryBody) => {
-  const res = await client.post("/catalog/brand", body);
+  const res = await client.post("/catalog/category", body);
   return res.data;
 };
 
