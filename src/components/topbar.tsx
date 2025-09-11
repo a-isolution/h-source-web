@@ -47,9 +47,9 @@ export const Topbar: React.FC<TopbarProps> = ({
         </button>
       </div>
 
-      <div className="w-full md:mx-auto px-4 md:pl-32 max-w-full md:w-[400px] lg:w-[600px]">
+      {/* <div className="w-full md:mx-auto px-4 md:pl-32 max-w-full md:w-[400px] lg:w-[600px]">
         <SearchBar />
-      </div>
+      </div> */}
 
       <div className="flex items-center gap-8 z-10 ml-auto">
         <NotificationBell count={5} />

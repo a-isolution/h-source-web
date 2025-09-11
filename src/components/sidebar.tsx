@@ -12,6 +12,10 @@ import {
 } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
+import { useGetAuth } from "@/api/auth";
+import { useGetStoreById, useUpdateStore } from "@/api/store";
+import { useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -21,7 +25,31 @@ interface SidebarProps {
 export const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen }) => {
   const router = useRouter();
   const pathname = usePathname();
-  const [isOnline, setIsOnline] = React.useState(true);
+  const { data } = useGetAuth();
+  const storeId = data?.store.id || null;
+  const { data: store } = useGetStoreById({ storeId });
+  const [isOnline, setIsOnline] = React.useState(store?.isOnline);
+
+  const qc = useQueryClient();
+  const { mutate: updateStore } = useUpdateStore();
+  const toggleStoreOnline = () => {
+    updateStore(
+      { storeId: store?.id, body: { isOnline: !isOnline } },
+      {
+        onSuccess: () => {
+          qc.invalidateQueries({ queryKey: ["store-id", storeId] });
+          toast.success(`Store online status updated`);
+          setIsOnline((prev: any) => !prev);
+        },
+      }
+    );
+  };
+
+  React.useEffect(() => {
+    if (store?.isOnline !== undefined) {
+      setIsOnline(store.isOnline);
+    }
+  }, [store?.isOnline]);
 
   const menuItems = [
     { label: "Dashboard", icon: Home, to: "/dashboard" },
@@ -115,7 +143,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen }) => {
           <input
             type="checkbox"
             checked={isOnline}
-            onChange={() => setIsOnline(!isOnline)}
+            onChange={toggleStoreOnline}
             className="sr-only peer"
           />
           <div className="w-10 h-5 bg-gray-200 rounded-full peer-checked:bg-green-500 transition-colors"></div>

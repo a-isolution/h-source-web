@@ -67,7 +67,7 @@ export default function AddCategoryModal({
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="max-w-md">
+      <DialogContent className="w-[95%] sm:w-[80%] md:max-w-md">
         <DialogHeader>
           <DialogTitle>Add New Category</DialogTitle>
           <DialogDescription className="my-2">

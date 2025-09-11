@@ -1,5 +1,6 @@
 "use client";
 
+import { useGetAuth } from "@/api/auth";
 import { useGetBrands } from "@/api/brands";
 import { useGetCategories } from "@/api/category";
 import {
@@ -7,15 +8,16 @@ import {
   useGetMyProducts,
   useUpdateProduct,
 } from "@/api/products";
+import { useGetStoreById } from "@/api/store";
 import DeleteModal from "@/components/delete-modal";
 import { CustomPagination } from "@/components/pagination";
 import SearchBar from "@/components/search";
 import SelectBox from "@/components/select-box";
 import Spinner from "@/components/spinner";
 import { Button } from "@/components/ui/button";
+import { isStoreProfileComplete } from "@/lib/store-profile-checker";
 import { useQueryClient } from "@tanstack/react-query";
 import { Pen, Plus, SearchX, Trash } from "lucide-react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -23,6 +25,22 @@ import { toast } from "sonner";
 const Products = () => {
   const router = useRouter();
   const qc = useQueryClient();
+
+  const { data: auth } = useGetAuth();
+  const storeId = auth?.store.id || null;
+  const { data: store } = useGetStoreById({ storeId });
+  const complete = isStoreProfileComplete(store);
+
+  const handleClick = () => {
+    if (!complete) {
+      toast.message(
+        "Please complete your store profile before adding a product."
+      );
+      return;
+    }
+
+    router.push("/products/add-new");
+  };
 
   const { data: brands } = useGetBrands();
   const { data: Categories } = useGetCategories();
@@ -79,17 +97,18 @@ const Products = () => {
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
         <div>
           <h1 className="text-xl font-medium">Products</h1>
-          <span className="font-medium text-[#A7A7A7] text-sm">
-            Manage your drinks and candy inventory
+          <span className="font-medium text-sm text-[#A7A7A7]">
+            Add, edit, and manage your product inventory
           </span>
         </div>
-        <Link
-          href="/products/add-new"
+
+        <Button
+          onClick={handleClick}
           className="inline-flex text-sm items-center gap-2 bg-lime-400 text-black px-4 py-2 rounded-md font-medium hover:bg-lime-500 transition"
         >
           <Plus className="w-4 h-4" />
           Add New Product
-        </Link>
+        </Button>
       </div>
 
       {/* Search and Filter bar */}

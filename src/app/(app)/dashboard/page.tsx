@@ -1,25 +1,21 @@
 "use client";
 
-import { useGetAuth, useVerifyEmail, useVerifyEmailCode } from "@/api/auth";
 import VerifiedBannerInfo from "@/components/dashboard/info";
-import VerifyEmailModal from "@/components/modals/verify-email-modal";
-import VerifyPhoneModal from "@/components/modals/verify-phone-modal";
-import { Button } from "@/components/ui/button";
+import StoreProfileInfo from "@/components/dashboard/store-profile-info";
 import { ArrowUpRight } from "lucide-react";
-import React, { useState } from "react";
+import React from "react";
 
 const Dashboard = () => {
   return (
     <div className="p-6 space-y-6">
       <VerifiedBannerInfo />
+      <StoreProfileInfo />
 
       <div>
         <h1 className="text-xl font-medium">Sarah&apos;s Corner Store</h1>
         <span className="font-medium text-[#A7A7A7] text-sm">
           Managing your marketplace since 2023
         </span>
-
-        {/* Info Banner */}
       </div>
 
       {/* Earnings Summary */}

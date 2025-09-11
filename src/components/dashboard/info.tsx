@@ -12,7 +12,7 @@ const VerifiedBannerInfo = () => {
 
   const { data: user } = useGetAuth();
   const isUserVerified =
-    user?.emailVerifiedAt !== null || user?.phoneVerifiedAt !== null;
+    user?.emailVerifiedAt !== null && user?.phoneVerifiedAt !== null;
 
   return (
     <div>
@@ -27,6 +27,7 @@ const VerifiedBannerInfo = () => {
               <Button
                 type="button"
                 onClick={() => setEmailModal(true)}
+                disabled={user?.emailVerifiedAt}
                 className="inline-flex rounded-sm items-center justify-center whitespace-nowrap bg-[#ADF802] px-3 py-1.5 text-sm font-medium text-black shadow-sm transition-colors hover:bg-gray-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8CC200] focus-visible:ring-offset-2"
               >
                 Verify Email

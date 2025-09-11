@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Bell, Trash, X } from "lucide-react";
+import { Bell, BellIcon, Trash } from "lucide-react";
 import { useGetNotifications } from "@/api/notification";
 
 interface NotificationItem {
@@ -35,7 +35,6 @@ const initialNotifications: NotificationItem[] = [
   //   read: false,
   // },
 ];
-
 const Notification = () => {
   const { data } = useGetNotifications();
 
@@ -47,7 +46,7 @@ const Notification = () => {
   };
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="flex flex-col p-6 space-y-6">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
         <div>
@@ -59,42 +58,51 @@ const Notification = () => {
       </div>
 
       {/* Notification List */}
-      <div className="space-y-4">
+      <div className="flex-1 flex">
         {notifications.length === 0 ? (
-          <p className="text-center text-sm text-gray-500">No notifications.</p>
-        ) : (
-          notifications.map((notification) => (
-            <div
-              key={notification.id}
-              className={`flex items-start justify-between gap-4 p-4 border rounded-lg ${
-                notification.read ? "bg-white" : "bg-blue-50"
-              }`}
-            >
-              <div className="flex gap-4">
-                <div className="mt-1">
-                  <Bell className="h-5 w-5 text-blue-500" />
-                </div>
-                <div className="flex-1">
-                  <h2 className="text-sm font-semibold">
-                    {notification.title}
-                  </h2>
-                  <p className="text-sm text-gray-600">
-                    {notification.message}
-                  </p>
-                  <p className="text-xs text-gray-400 mt-1">
-                    {new Date(notification.timestamp).toLocaleString()}
-                  </p>
-                </div>
-              </div>
-              <button
-                onClick={() => handleDelete(notification.id)}
-                className="text-gray-400 hover:text-red-500 self-center px-1"
-                aria-label="Delete notification"
-              >
-                <Trash className="h-4 w-4" />
-              </button>
+          <div className="flex flex-1 items-center justify-center py-10">
+            <div className="flex flex-col items-center">
+              <BellIcon className="h-10 w-10 text-gray-400 mb-2" />
+              <p className="text-center text-sm text-gray-500">
+                No notifications.
+              </p>
             </div>
-          ))
+          </div>
+        ) : (
+          <div className="w-full space-y-4">
+            {notifications.map((notification) => (
+              <div
+                key={notification.id}
+                className={`flex items-start justify-between gap-4 p-4 border rounded-lg ${
+                  notification.read ? "bg-white" : "bg-blue-50"
+                }`}
+              >
+                <div className="flex gap-4">
+                  <div className="mt-1">
+                    <Bell className="h-5 w-5 text-blue-500" />
+                  </div>
+                  <div className="flex-1">
+                    <h2 className="text-sm font-semibold">
+                      {notification.title}
+                    </h2>
+                    <p className="text-sm text-gray-600">
+                      {notification.message}
+                    </p>
+                    <p className="text-xs text-gray-400 mt-1">
+                      {new Date(notification.timestamp).toLocaleString()}
+                    </p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => handleDelete(notification.id)}
+                  className="text-gray-400 hover:text-red-500 self-center px-1"
+                  aria-label="Delete notification"
+                >
+                  <Trash className="h-4 w-4" />
+                </button>
+              </div>
+            ))}
+          </div>
         )}
       </div>
     </div>

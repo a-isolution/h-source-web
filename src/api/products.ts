@@ -90,7 +90,7 @@ export const useGetMyProducts = ({ params }: { params: GetProductsParams }) => {
 
 export const useGetProductById = ({ productId }: { productId?: any }) => {
   return useQuery({
-    queryKey: ["product", productId],
+    queryKey: ["product-id", productId],
     queryFn: () => getProductById({ productId }),
     enabled: !!productId,
   });
