@@ -10,12 +10,13 @@ import { Button } from "@/components/ui/button";
 import { PasswordInput } from "@/components/password-input";
 import { registerAtom } from "@/lib/atom/register-atom";
 import { useAtom } from "jotai";
+import Spinner from "@/components/spinner";
 
 const Register = () => {
   const [data, setData] = useAtom(registerAtom);
   const [error, setError] = useState("");
 
-  const { mutate } = useRegister();
+  const { mutate, isPending } = useRegister();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -85,7 +86,7 @@ const Register = () => {
           {error && <p className="text-red-500 text-sm">{error}</p>}
 
           <Button type="submit" className="w-full my-4">
-            Register
+            {isPending ? <Spinner /> : "Register"}
           </Button>
         </form>
       </div>
@@ -93,7 +94,7 @@ const Register = () => {
       <div className="flex self-center justify-center items-center ">
         <p>
           Already have an account?{" "}
-          <Link href={"/login"} className="">
+          <Link href={"/login"} className="underline">
             Login
           </Link>
         </p>

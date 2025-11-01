@@ -96,7 +96,7 @@ const Settings = () => {
         </div>
       </main>
 
-      <main className="mb-6">
+      <main className="mb-20">
         <div className="mb-6">
           <h2 className="text-lg font-semibold text-gray-900">
             Store Information
@@ -106,7 +106,7 @@ const Settings = () => {
             options.
           </p>
         </div>
-        <div className="bg-white w-full lg:w-[60%] rounded-xl my-6 shadow-sm divide-y divide-stone-200">
+        <div className="bg-red w-full lg:w-[60%] rounded-xl my-6 shadow-sm divide-y divide-stone-200">
           {[
             {
               title: "Store Details",
@@ -165,6 +165,8 @@ const Settings = () => {
             );
           })}
         </div>
+
+        <div className="pb-20" />
       </main>
     </div>
   );

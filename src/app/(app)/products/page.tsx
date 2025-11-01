@@ -180,9 +180,9 @@ const Products = () => {
               {/* Product image + overlays */}
               <div className="relative">
                 <img
-                  src="/coke.png"
+                  src={i?.images && i?.images[0]}
                   alt="product"
-                  className="rounded-lg bg-gray-100 object-cover w-full h-[230px] sm:w-[280px]"
+                  className="rounded-lg bg-gray-100 object-cover w-full max-w-[300px] sm:max-w-[250px] md:max-w-[300px] lg:max-w-[350px] xl:max-w-[400px] h-[230px] mx-auto"
                 />
 
                 {/* Out of Stock Label */}
@@ -227,7 +227,10 @@ const Products = () => {
               </div>
 
               {/* Details */}
-              <div className="my-3 flex flex-col gap-1">
+              <div
+                // onClick={() => router.push(`/products/${i.id}`)}
+                className="my-3 flex flex-col gap-1 hover:bg-lime-50 p-1 rounded-md cursor-pointer"
+              >
                 <h2 className="font-semibold text-base">{i.name}</h2>
 
                 <div className="flex flex-row items-center gap-6 text-sm">
@@ -265,10 +268,12 @@ const Products = () => {
       </div>
 
       <div className="mt-12 mb-20">
-        <CustomPagination
-          totalPages={data?.pagination?.totalPages}
-          onPageChange={(page) => setPage(page - 1)}
-        />
+        {data?.pagination?.totalPages > 1 && (
+          <CustomPagination
+            totalPages={data?.pagination?.totalPages}
+            onPageChange={(page) => setPage(page - 1)}
+          />
+        )}
       </div>
 
       <DeleteModal

@@ -57,6 +57,8 @@ const ProfilePage = () => {
     const form = new FormData();
     form.append("file", file);
 
+    console.log(file, "file here");
+
     uploadAvatar(form, {
       onSuccess: () => toast.success("Avatar updated!"),
     });

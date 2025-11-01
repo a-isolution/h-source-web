@@ -4,6 +4,7 @@ import { Menu } from "lucide-react";
 import SearchBar from "./search";
 import { UserProfile } from "./user-profile";
 import { NotificationBell } from "./notification-bell";
+import { useGetNotifications } from "@/api/notification";
 
 interface TopbarProps {
   onOpenMenu: () => void;
@@ -17,6 +18,7 @@ export const Topbar: React.FC<TopbarProps> = ({
   sidebarWidth,
 }) => {
   const [windowWidth, setWindowWidth] = useState<number | null>(null);
+  const { data } = useGetNotifications();
 
   useEffect(() => {
     // Run only on client
@@ -52,7 +54,7 @@ export const Topbar: React.FC<TopbarProps> = ({
       </div> */}
 
       <div className="flex items-center gap-8 z-10 ml-auto">
-        <NotificationBell count={5} />
+        <NotificationBell count={data?.length} />
         <UserProfile />
       </div>
     </header>

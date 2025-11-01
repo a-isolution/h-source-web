@@ -1,5 +1,5 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { client, onError, TResponse } from "./api-client";
+import { useQuery } from "@tanstack/react-query";
+import { client, TResponse } from "./api-client";
 
 // actions
 const getCurrencies = async () => {

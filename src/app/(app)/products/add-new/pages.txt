@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { ArrowRight, UploadCloud, X } from "lucide-react";
 import {
   Select,
@@ -11,22 +11,21 @@ import {
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { useGetBrands } from "@/api/brands";
-import { useGetCategories } from "@/api/category";
-import { useGetCurrencies } from "@/api/currency";
-import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import Spinner from "@/components/spinner";
+import AddBrandModal from "@/components/product/add-brand-modal";
+import AddCategoryModal from "@/components/product/add-category-modal";
 import {
   useCreateProduct,
   useGetProductById,
-  useGetProductSizes,
   useUpdateProduct,
 } from "@/api/products";
-import Spinner from "@/components/spinner";
-import { Button } from "@/components/ui/button";
-import AddBrandModal from "@/components/product/add-brand-modal";
-import AddCategoryModal from "@/components/product/add-category-modal";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useGetBrands } from "@/api/brands";
+import { useGetCategories } from "@/api/category";
+import { useGetCurrencies } from "@/api/currency";
 import { useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const CreateProduct = () => {
   const searchParams = useSearchParams();
@@ -52,6 +51,7 @@ const CreateProduct = () => {
   const [categoryId, setCategoryId] = useState("");
   const [sizeId, setSizeId] = useState("");
   const [isActive, setIsActive] = useState<number>(data?.isActive ?? 1);
+  const [imagePreviews, setImagePreviews] = useState<string[]>([]); // Added state for image previews
 
   useEffect(() => {
     if (data && productId) {
@@ -70,6 +70,7 @@ const CreateProduct = () => {
       }
 
       setImages([]);
+      setImagePreviews([]); // Reset image previews when editing a product
     }
   }, [data, productId]);
 
@@ -77,11 +78,18 @@ const CreateProduct = () => {
     if (e.target.files) {
       const selectedFiles = Array.from(e.target.files);
       setImages((prev) => [...prev, ...selectedFiles]);
+
+      // Generate preview URLs for the selected images
+      const imagePreviews = selectedFiles.map((file) =>
+        URL.createObjectURL(file)
+      );
+      setImagePreviews((prev) => [...prev, ...imagePreviews]);
     }
   };
 
   const removeImage = (index: number) => {
     setImages((prev) => prev.filter((_, i) => i !== index));
+    setImagePreviews((prev) => prev.filter((_, i) => i !== index)); // Remove preview as well
   };
 
   const handleSubmit = () => {
@@ -102,7 +110,7 @@ const CreateProduct = () => {
     formData.append("brandId", brandId);
     formData.append("categoryId", categoryId);
     formData.append("isFeatured", "1");
-    formData.append("isActive", isActive.toString()); // Use actual state value (1 or 0)
+    formData.append("isActive", isActive.toString());
     formData.append("stockQuantity", stockQuantity);
 
     images.forEach((file) => {
@@ -127,7 +135,7 @@ const CreateProduct = () => {
             toast.success(data?.message || "Product created successfully!");
             qc.invalidateQueries({ queryKey: ["my-products"] });
             router.push("/products");
-            // Clear form
+            // Clear form after submission
             setName("");
             setPrice("");
             setDescription("");
@@ -137,14 +145,10 @@ const CreateProduct = () => {
             setBrandId("");
             setCategoryId("");
             setIsActive(1);
+            setImagePreviews([]);
           },
         }
       );
-    }
-
-    // Optional: log formData for debugging
-    for (const [key, value] of formData.entries()) {
-      console.log(`${key}:`, value);
     }
   };
 
@@ -154,21 +158,8 @@ const CreateProduct = () => {
   const [openCategoryModal, setOpenCategoryModal] = useState(false);
   const handleAddCategory = () => setOpenCategoryModal(true);
 
-  const { data: pSize } = useGetProductSizes();
-
   return (
     <div className="p-2 sm:p-6 space-y-6">
-      {productId && (
-        <div className="flex justify-end">
-          <Button
-            onClick={handleSubmit}
-            className="bg-lime-400 min-w-32 text-black px-6 py-2 rounded-sm font-medium flex items-center gap-2 hover:bg-lime-500 transition"
-          >
-            {updateIsPending ? <Spinner /> : "Save Changes"}
-          </Button>
-        </div>
-      )}
-
       <div>
         <h1 className="text-xl font-medium">Products</h1>
         <span className="text-sm text-[#A7A7A7]">
@@ -177,19 +168,13 @@ const CreateProduct = () => {
       </div>
 
       {productId && (
-        <div className="flex items-center space-x-2">
-          <label htmlFor="isActiveToggle" className="cursor-pointer">
-            Is Product Active:
-          </label>
-          <input
-            id="isActiveToggle"
-            type="checkbox"
-            checked={isActive === 1}
-            onChange={(e) => {
-              setIsActive(e.target.checked ? 1 : 0);
-            }}
-            className="cursor-pointer"
-          />
+        <div className="flex justify-end">
+          <Button
+            onClick={handleSubmit}
+            className="bg-lime-400 min-w-32 text-black px-6 py-2 rounded-sm font-medium flex items-center gap-2 hover:bg-lime-500 transition"
+          >
+            {updateIsPending ? <Spinner /> : "Save Changes"}
+          </Button>
         </div>
       )}
 
@@ -222,16 +207,14 @@ const CreateProduct = () => {
                   ))}
                 </SelectContent>
               </Select>
-              <div className="min-w-fit">
-                <Button
-                  onClick={handleAddBrand}
-                  variant="secondary"
-                  size="sm"
-                  className="flex items-center gap-1 w-fit"
-                >
-                  Add new
-                </Button>
-              </div>
+              <Button
+                onClick={handleAddBrand}
+                variant="secondary"
+                size="sm"
+                className="flex items-center gap-1 w-fit"
+              >
+                Add new
+              </Button>
             </div>
           </div>
 
@@ -253,37 +236,14 @@ const CreateProduct = () => {
                   ))}
                 </SelectContent>
               </Select>
-              <div className="min-w-fit">
-                <Button
-                  onClick={handleAddCategory}
-                  variant="secondary"
-                  size="sm"
-                  className="flex items-center gap-1 w-fit"
-                >
-                  Add new
-                </Button>
-              </div>
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <Label>Product Size</Label>
-            <div className="flex flex-row items-center gap-2">
-              <Select
-                value={sizeId}
-                onValueChange={(value) => setSizeId(value)}
+              <Button
+                onClick={handleAddCategory}
+                variant="secondary"
+                size="sm"
+                className="flex items-center gap-1 w-fit"
               >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select a product size if applicable" />
-                </SelectTrigger>
-                <SelectContent>
-                  {pSize?.data?.map((size: any) => (
-                    <SelectItem key={size.id} value={size.id.toString()}>
-                      {size.name} {size.value}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                Add new
+              </Button>
             </div>
           </div>
 
@@ -294,7 +254,7 @@ const CreateProduct = () => {
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Write a product description..."
-              className="w-full px-4 py-2 border rounded-sm bg-gray-50"
+              className="w-full p-3 rounded-md border border-gray-300"
             />
           </div>
         </div>
@@ -303,40 +263,21 @@ const CreateProduct = () => {
           <div className="space-y-2">
             <Label>Price</Label>
             <Input
-              type="number"
-              step="0.01"
               value={price}
               onChange={(e) => setPrice(e.target.value)}
-              placeholder="Enter price"
+              placeholder="Price in USD"
+              type="number"
+              step="0.01"
             />
-          </div>
-
-          <div className="space-y-2">
-            <Label>Currency</Label>
-            <Select
-              value={currencyId}
-              onValueChange={(value) => setCurrencyId(value)}
-            >
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select a currency" />
-              </SelectTrigger>
-              <SelectContent>
-                {currencies?.data?.map((cur: any) => (
-                  <SelectItem key={cur.id} value={cur.id.toString()}>
-                    {cur.name} ({cur.symbol})
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
           </div>
 
           <div className="space-y-2">
             <Label>Stock Quantity</Label>
             <Input
-              type="number"
               value={stockQuantity}
               onChange={(e) => setStockQuantity(e.target.value)}
-              placeholder="Enter quantity"
+              placeholder="Enter stock quantity"
+              type="number"
             />
           </div>
 
@@ -365,77 +306,39 @@ const CreateProduct = () => {
                 </span>
               </label>
             </div>
-
-            {images.length > 0 && (
-              <div className="mt-2 grid grid-cols-2 gap-2">
-                {images.map((file, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center justify-between p-2 border rounded text-sm bg-white"
-                  >
-                    <span className="truncate w-40">{file.name}</span>
-                    <button
-                      onClick={() => removeImage(index)}
-                      className="ml-2 text-red-500 hover:text-red-700"
-                      title="Remove"
-                    >
-                      <X className="w-4 h-4" />
-                    </button>
-                  </div>
-                ))}
-              </div>
-            )}
           </div>
-        </div>
-      </div>
 
-      <div className="container mx-auto py-8">
-        {productId && data?.images?.length > 0 ? (
-          <div>
-            <h2 className="text-2xl font-bold mb-6">Product Images</h2>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-              {data?.images?.map((image: any, index: any) => (
-                <div
-                  key={index}
-                  className="w-full h-64 relative overflow-hidden rounded-lg shadow-lg"
-                >
+          {imagePreviews.length > 0 && (
+            <div className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4">
+              {imagePreviews.map((preview, index) => (
+                <div key={index} className="relative">
                   <img
-                    src={image}
-                    alt={`Product image ${index + 1}`}
-                    className="object-cover w-full h-full"
+                    src={preview}
+                    alt={`Image preview ${index + 1}`}
+                    className="object-cover w-full h-32 rounded-md"
                   />
+                  <button
+                    onClick={() => removeImage(index)}
+                    className="absolute top-1 right-1 text-red-500 hover:text-red-700"
+                    title="Remove"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
                 </div>
               ))}
             </div>
-          </div>
-        ) : (
-          <div className="text-center text-gray-500">No images available</div>
-        )}
+          )}
+        </div>
       </div>
 
-      {!productId && (
-        <div className="flex justify-center">
-          <Button
-            onClick={handleSubmit}
-            className="bg-lime-400 min-w-32 text-black px-6 py-2 rounded-sm font-medium flex items-center gap-2 hover:bg-lime-500 transition"
-          >
-            {isPending ? (
-              <Spinner />
-            ) : (
-              <div className="flex flex-row items-center gap-2">
-                Create Product
-                <ArrowRight className="w-4 h-4" />
-              </div>
-            )}
-          </Button>
-        </div>
-      )}
-
-      <AddBrandModal open={openBrandModal} setOpen={setOpenBrandModal} />
-      <AddCategoryModal
-        open={openCategoryModal}
-        setOpen={setOpenCategoryModal}
-      />
+      <div className="flex justify-center mt-8">
+        <Button
+          onClick={handleSubmit}
+          className="bg-lime-400 min-w-32 text-black px-6 py-2 rounded-sm font-medium flex items-center gap-2 hover:bg-lime-500 transition"
+        >
+          {isPending || updateIsPending ? <Spinner /> : "Save Product"}
+        </Button>
+      </div>
     </div>
   );
 };

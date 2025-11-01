@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import Spinner from "../spinner";
 import { useQueryClient } from "@tanstack/react-query";
 import { useUpdateAvatar, useUpdateProfile } from "@/api/auth";
+import AvatarUpload from "./avatar-upload";
 
 export const UserProfile = ({ user }: { user: any }) => {
   const qc = useQueryClient();
@@ -21,7 +22,6 @@ export const UserProfile = ({ user }: { user: any }) => {
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
-  const [avatarFile, setAvatarFile] = useState<File | null>(null);
 
   useEffect(() => {
     if (user) {
@@ -35,38 +35,6 @@ export const UserProfile = ({ user }: { user: any }) => {
       setAvatarPreview(user.avatar || null);
     }
   }, [user]);
-
-  const handleAvatarChange = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-      setAvatarFile(file);
-      setAvatarPreview(URL.createObjectURL(file));
-    }
-  };
-
-  const handleUpdateAvatar = () => {
-    if (!avatarFile) {
-      toast.error("Please select an image to upload");
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append("file", avatarFile);
-
-    updateAvatar(
-      { body: formData },
-      {
-        onSuccess: () => {
-          toast.success("Profile image updated successfully");
-          qc.invalidateQueries({ queryKey: ["get-auth"] });
-          setAvatarFile(null);
-        },
-        onError: () => {
-          toast.error("Failed to update avatar");
-        },
-      }
-    );
-  };
 
   const handleUpdateUser = () => {
     updateUser(
@@ -98,30 +66,7 @@ export const UserProfile = ({ user }: { user: any }) => {
           )}
         </div>
 
-        <div>
-          <label
-            htmlFor="avatarUpload"
-            className="cursor-pointer text-sm text-blue-600 hover:underline"
-          >
-            Change Avatar
-          </label>
-          <input
-            id="avatarUpload"
-            type="file"
-            accept="image/*"
-            className="hidden"
-            onChange={handleAvatarChange}
-          />
-          {avatarFile && (
-            <button
-              onClick={handleUpdateAvatar}
-              disabled={avatarIsPending}
-              className="ml-4 px-3 py-1.5 bg-blue-600 text-white rounded text-sm hover:bg-blue-700 transition disabled:opacity-50"
-            >
-              {avatarIsPending ? "Uploading..." : "Upload"}
-            </button>
-          )}
-        </div>
+        <AvatarUpload />
       </div>
 
       <div className="space-y-6">
@@ -147,7 +92,7 @@ export const UserProfile = ({ user }: { user: any }) => {
         </div>
 
         <div>
-          <label className="block text-sm font-medium">Address</label>
+          <label className="block text-sm font-medium">Home Address</label>
           <input
             type="text"
             placeholder="Address"
@@ -163,7 +108,7 @@ export const UserProfile = ({ user }: { user: any }) => {
             type="text"
             placeholder="City"
             value={city}
-            onChange={(e) => setAddress(e.target.value)}
+            onChange={(e) => setCity(e.target.value)}
             className="mt-2 w-full border rounded-lg px-2.5 py-2 text-[13px] border-gray-200"
           />
         </div>
@@ -174,7 +119,7 @@ export const UserProfile = ({ user }: { user: any }) => {
             type="text"
             placeholder="State"
             value={state}
-            onChange={(e) => setAddress(e.target.value)}
+            onChange={(e) => setState(e.target.value)}
             className="mt-2 w-full border rounded-lg px-2.5 py-2 text-[13px] border-gray-200"
           />
         </div>
@@ -186,7 +131,7 @@ export const UserProfile = ({ user }: { user: any }) => {
             placeholder="phone"
             value={phone}
             disabled={true}
-            onChange={(e) => setAddress(e.target.value)}
+            // onChange={(e) => setPhone(e.target.value)}
             className="mt-2 w-full border rounded-lg px-2.5 py-2 text-[13px] border-gray-200"
           />
         </div>
@@ -198,7 +143,7 @@ export const UserProfile = ({ user }: { user: any }) => {
             disabled={true}
             placeholder="email"
             value={email}
-            onChange={(e) => setAddress(e.target.value)}
+            // onChange={(e) => setEmail(e.target.value)}
             className="mt-2 w-full border rounded-lg px-2.5 py-2 text-[13px] border-gray-200"
           />
         </div>
@@ -287,7 +232,7 @@ export const StoreDetails = ({
           placeholder="Description..."
           value={description}
           onChange={(e) => setDescription(e.target.value)}
-          className="mt-2 w-full border rounded-lg px-2.5 py-2 text-[13px] border-gray-200"
+          className="mt-2 w-full border rounded-lg p-4 text-[13px] border-gray-200"
         />
       </div>
 
@@ -298,7 +243,7 @@ export const StoreDetails = ({
           placeholder="Your store address..."
           value={address}
           onChange={(e) => setAddress(e.target.value)}
-          className="mt-2 w-full border rounded-lg px-2.5 py-2 text-[13px] border-gray-200"
+          className="mt-2 w-full border rounded-lg p-4 text-[13px] border-gray-200"
         />
       </div>
 

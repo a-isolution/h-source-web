@@ -14,7 +14,11 @@ export const testClient = axios.create({ baseURL: `${baseURL}` });
 export const onError = (error: any) => {
   const err = error.response?.data?.message;
 
-  let msg = !!err ? (Array.isArray(err) ? err[0] : err) : DEFAULT_ERROR_MESSAGE;
+  const msg = !!err
+    ? Array.isArray(err)
+      ? err[0]
+      : err
+    : DEFAULT_ERROR_MESSAGE;
   if (msg) toast.error(msg);
 };
 

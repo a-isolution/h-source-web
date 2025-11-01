@@ -25,8 +25,8 @@ const updateProfle = async (body: any) => {
   return res.data.data;
 };
 
-const updateAvatar = async (body: TUpdateAvatar) => {
-  const res = await client.put("/auth/avatar", body);
+const updateAvatar = async (file: any) => {
+  const res = await client.put("/auth/avatar", file);
   return res.data.data;
 };
 
@@ -99,7 +99,7 @@ export const useUpdateProfile = () => {
 export const useUpdateAvatar = () => {
   return useMutation({
     onError,
-    mutationFn: (body: any) => updateAvatar(body),
+    mutationFn: (file: any) => updateAvatar(file),
   });
 };
 
@@ -134,7 +134,6 @@ export const useRegister = () => {
 };
 
 export const useLogout = () => {
-  const id = "auth";
   const router = useRouter();
 
   const handleLogout = () => {

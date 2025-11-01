@@ -2,7 +2,6 @@
 
 import React, { useState } from "react";
 import { Bell, BellIcon, Trash } from "lucide-react";
-import { useGetNotifications } from "@/api/notification";
 
 interface NotificationItem {
   id: number;
@@ -36,7 +35,7 @@ const initialNotifications: NotificationItem[] = [
   // },
 ];
 const Notification = () => {
-  const { data } = useGetNotifications();
+  // const { data } = useGetNotifications();
 
   const [notifications, setNotifications] =
     useState<NotificationItem[]>(initialNotifications);

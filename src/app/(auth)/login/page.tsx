@@ -74,7 +74,7 @@ const Login = () => {
       <div className="flex self-center justify-center items-center ">
         <p>
           Dont have an account?{" "}
-          <Link href={"/register"} className="">
+          <Link href={"/register"} className="underline">
             Register
           </Link>
         </p>

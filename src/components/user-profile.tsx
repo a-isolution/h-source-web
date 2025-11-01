@@ -10,12 +10,13 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { useRouter } from "next/navigation";
-import { useLogout } from "@/api/auth";
+import { useGetAuth, useLogout } from "@/api/auth";
 import { UserRound } from "lucide-react";
 
 export const UserProfile: React.FC = () => {
   const router = useRouter();
   const { mutate: logoutUser } = useLogout();
+  const { data: user } = useGetAuth();
 
   // const handleProfile = () => router.push("/settings/profile");
   const handleSettings = () => router.push("/settings");
@@ -24,7 +25,17 @@ export const UserProfile: React.FC = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <UserRound className="h-9 w-9 rounded-full border cursor-pointer p-1.5 bg-green-100 text-gray-700" />
+        {user?.avatar ? (
+          <div className="relative">
+            <img
+              src={user.avatar}
+              alt="User Avatar"
+              className="h-9 w-9 rounded-full border object-cover cursor-pointer"
+            />
+          </div>
+        ) : (
+          <UserRound className="h-9 w-9 rounded-full border cursor-pointer p-1.5 bg-green-100 text-gray-700" />
+        )}
       </DropdownMenuTrigger>
 
       <DropdownMenuContent align="end">

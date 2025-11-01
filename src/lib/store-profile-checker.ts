@@ -55,12 +55,11 @@ export function isStoreProfileComplete(store: Store): boolean {
     !store?.accountNumber ||
     !store?.accountName ||
     !store?.payoutSchedule ||
-    !store?.availability?.some((day) => day.active) ||
+    // !store?.availability?.some((day) => day.active) ||
     !store?.owner ||
     !store?.owner.fullName ||
     !store?.owner.phone ||
-    !store?.owner.email ||
-    !store?.owner.emailVerifiedAt
+    !store?.owner.email
   ) {
     return false;
   }
